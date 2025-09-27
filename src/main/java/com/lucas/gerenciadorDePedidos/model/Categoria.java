@@ -23,8 +23,13 @@ public class Categoria {
 
         StringBuilder listaProdutos = new StringBuilder();
 
+        int i = -1;
+
         for (Produto p : produtos) {
+            i++;
             listaProdutos
+                    .append(i + 1)
+                    .append(" | ")
                     .append(p.getNome())
                     .append(" - R$ ")
                     .append(p.getPreco())

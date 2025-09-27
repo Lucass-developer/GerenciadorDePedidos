@@ -2,6 +2,9 @@ package com.lucas.gerenciadorDePedidos.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Produto {
 
@@ -11,6 +14,15 @@ public class Produto {
 
     @ManyToOne
     private Categoria categoria;
+
+    @ManyToMany
+    @JoinTable(
+            name = "pedido_produto",
+            joinColumns = @JoinColumn(name = "pedido_id"),
+            inverseJoinColumns = @JoinColumn(name = "produtos_id")
+    )
+
+    private List<Pedido> pedidos = new ArrayList<>();
 
     @Column(unique = true)
     private String nome;
@@ -26,6 +38,16 @@ public class Produto {
     }
 
     //get and setters
+
+
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
+
     public Categoria getCategoria() {
         return categoria;
     }

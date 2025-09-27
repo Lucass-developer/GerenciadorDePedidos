@@ -1,11 +1,13 @@
 package com.lucas.gerenciadorDePedidos.main;
 
 import com.lucas.gerenciadorDePedidos.model.Categoria;
+import com.lucas.gerenciadorDePedidos.model.Pedido;
 import com.lucas.gerenciadorDePedidos.model.Produto;
 import com.lucas.gerenciadorDePedidos.repository.CategoriaRepository;
 import com.lucas.gerenciadorDePedidos.repository.PedidoRepository;
 import com.lucas.gerenciadorDePedidos.repository.ProdutoRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +15,7 @@ import java.util.Scanner;
 
 public class Main {
     private final Scanner scanner = new Scanner(System.in);
+
     private final ProdutoRepository produtoRepository;
     private final PedidoRepository pedidoRepository;
     private final CategoriaRepository  categoriaRepository;
@@ -33,7 +36,7 @@ public class Main {
         do {
             System.out.println("""
                     DIGITE A OPÇÃO:
-                    1 - Adicionar Produtos
+                    1 - Adicionar Produtosr
                     2 - Vizualizar Produtos
                     3 - Adicionar Pedidos
                     4 - Ver Pedidos
@@ -53,7 +56,7 @@ public class Main {
                     break;
                 }
                 case 3: {
-                    System.out.println("3");
+                    adicionarPedido();
                     break;
                 }
                 case 4: {
@@ -68,6 +71,44 @@ public class Main {
                 default: {
                     System.out.println("Opção invalida :(");
                 }
+            }
+        } while (loop);
+    }
+
+    private void adicionarPedido() {
+        var loop = true;
+        do {
+            exibirCategorias();
+
+            System.out.println("Digite o numero da categoria para selecionar os produtos:");
+            var categoriaEscolhida = scanner.nextInt();
+            scanner.nextLine();
+
+            if (categoriaEscolhida <= categorias.size()) {
+                Pedido pedido = new Pedido(LocalDate.now());
+
+                var num = -1;
+
+                do {
+                    vizualizarProdutos();
+
+                    System.out.println("Digite o numero do produto para adicionar ao pedido:");
+                    var numeroProduto = scanner.nextInt();
+                    scanner.nextLine();
+
+                    System.out.println("Produto Adicionado ao pedido!");
+
+                    System.out.println("\nDigite 1 para adicionar outros produtos ou 0 para fechar o pedido:");
+
+                    num = scanner.nextInt();
+                    scanner.nextLine();
+
+                } while (num != 0);
+
+                loop = false;
+
+            } else {
+                System.out.println("***** CATEGORIA NÃO ENCONTRADA! *****\n");
             }
         } while (loop);
     }
@@ -145,12 +186,13 @@ public class Main {
     }
 
     private void exibirCategorias() {
+        System.out.println("LISTA DE CATEGORIAS:");
+
         categorias = categoriaRepository.findAll();
 
         if (!categorias.isEmpty()){
             for (int i = 0; i < categorias.size(); i++) {
-                System.out.println(i + 1);
-                System.out.println(categorias.get(i).getNome());
+                System.out.println(i + 1 + " - " +categorias.get(i).getNome());
             }
         } else {
             System.out.println("**** Lista de categorias vazia! ****");
