@@ -15,13 +15,7 @@ public class Produto {
     @ManyToOne
     private Categoria categoria;
 
-    @ManyToMany
-    @JoinTable(
-            name = "pedido_produto",
-            joinColumns = @JoinColumn(name = "pedido_id"),
-            inverseJoinColumns = @JoinColumn(name = "produtos_id")
-    )
-
+    @ManyToMany(mappedBy = "produtos", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Pedido> pedidos = new ArrayList<>();
 
     @Column(unique = true)

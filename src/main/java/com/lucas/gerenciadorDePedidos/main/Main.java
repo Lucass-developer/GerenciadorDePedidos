@@ -30,17 +30,19 @@ public class Main {
 
     private List<Categoria> categorias = new ArrayList<>();
 
+
     public void gerenciador() {
         boolean loop = true;
+        categorias = categoriaRepository.findAll();
 
         do {
             System.out.println("""
-                    DIGITE A OPÇÃO:
+                    \nDIGITE A OPÇÃO:
                     1 - Adicionar Produtosr
                     2 - Vizualizar Produtos
                     3 - Adicionar Pedidos
                     4 - Ver Pedidos
-                    5 - SAIR
+                    5 - sair
                     """);
 
             var opcaoEscolhida = scanner.nextInt();
@@ -88,20 +90,44 @@ public class Main {
                 Pedido pedido = new Pedido(LocalDate.now());
 
                 var num = -1;
+                int numeroProduto;
+                var categoria = categorias.get(categoriaEscolhida - 1);
 
                 do {
-                    vizualizarProdutos();
+                    System.out.println(categoria);
 
-                    System.out.println("Digite o numero do produto para adicionar ao pedido:");
-                    var numeroProduto = scanner.nextInt();
+                    if (num == -1) {
+                        System.out.println("Digite o numero do produto para adicionar ao pedido:");
+                    } else {
+                        System.out.println("Digite o numero do produto para adicionar ao pedido ou 0 para fechar o pedido:");
+
+                    }
+                    numeroProduto = scanner.nextInt();
                     scanner.nextLine();
 
-                    System.out.println("Produto Adicionado ao pedido!");
+                    num = numeroProduto;
 
-                    System.out.println("\nDigite 1 para adicionar outros produtos ou 0 para fechar o pedido:");
+                    if (numeroProduto != 0) {
+                        if (numeroProduto <= categoria.getProdutos().size()) {
+                            var idproduto = categoria.getProdutos().get(numeroProduto - 1).getId();
 
-                    num = scanner.nextInt();
-                    scanner.nextLine();
+                            Optional<Produto> buscaProduto = produtoRepository.findById(idproduto);
+
+                            Produto produto = buscaProduto.get();
+
+                            pedido.getProdutos().add(produto);
+
+                            System.out.println("***** " + produto.getNome() + " Adicionado ao pedido! *****\n");
+
+
+                        } else {
+                            System.out.println("***** Produto nao encontrado! *****\n");
+                        }
+                    } else {
+                        pedidoRepository.save(pedido);
+                        System.out.println("\n***** PEDIDO FECHADO! *****");
+                        num = numeroProduto;
+                    }
 
                 } while (num != 0);
 
@@ -206,6 +232,5 @@ public class Main {
         produtosRegistrados.forEach(System.out::println);
 
     }
-
 
 }
