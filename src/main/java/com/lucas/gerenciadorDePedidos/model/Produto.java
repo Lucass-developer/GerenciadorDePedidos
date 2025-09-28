@@ -15,7 +15,7 @@ public class Produto {
     @ManyToOne
     private Categoria categoria;
 
-    @ManyToMany(mappedBy = "produtos", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "produtos")
     private List<Pedido> pedidos = new ArrayList<>();
 
     @Column(unique = true)

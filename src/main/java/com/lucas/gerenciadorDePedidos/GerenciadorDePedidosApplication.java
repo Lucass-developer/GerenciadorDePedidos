@@ -31,7 +31,5 @@ public class GerenciadorDePedidosApplication implements CommandLineRunner {
 
 		Main main = new Main(produtoRepository, pedidoRepository, categoriaRepository);
 		main.gerenciador();
-
-		System.out.println("Encerrando.... :)");
 	}
 }

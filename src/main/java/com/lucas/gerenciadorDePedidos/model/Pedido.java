@@ -12,17 +12,16 @@ public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private LocalDate data;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "pedido_produto",
-            joinColumns = @JoinColumn(name = "pedido_id"),
-            inverseJoinColumns = @JoinColumn(name = "produtos_id")
+            joinColumns = @JoinColumn(name = "pedido_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "produto_id", referencedColumnName = "id")
     )
 
     private List<Produto> produtos = new ArrayList<>();
-
-    private LocalDate data;
 
     //Construtores
     public Pedido(LocalDate data) {
@@ -30,6 +29,23 @@ public class Pedido {
     }
 
     public Pedido(){}
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        int i = 1;
+
+        for(Produto p : produtos) {
+            sb
+                    .append(i++)
+                    .append(". ")
+                    .append(p.getNome())
+                    .append(" - R$ ")
+                    .append(p.getPreco())
+                    .append("\n");
+        }
+        return "Pedido: " + id + " | " + data + "\nProdutos:\n" + sb;
+    }
 
     //Getters and setters
 

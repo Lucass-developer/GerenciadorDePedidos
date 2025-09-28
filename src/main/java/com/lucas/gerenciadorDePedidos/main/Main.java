@@ -18,7 +18,7 @@ public class Main {
 
     private final ProdutoRepository produtoRepository;
     private final PedidoRepository pedidoRepository;
-    private final CategoriaRepository  categoriaRepository;
+    private final CategoriaRepository categoriaRepository;
 
     public Main(ProdutoRepository produtoRepository,
                 PedidoRepository pedidoRepository,
@@ -37,8 +37,8 @@ public class Main {
 
         do {
             System.out.println("""
-                    \nDIGITE A OPÇÃO:
-                    1 - Adicionar Produtosr
+                    \n+ Digite uma opção:
+                    1 - Adicionar Produtos
                     2 - Vizualizar Produtos
                     3 - Adicionar Pedidos
                     4 - Ver Pedidos
@@ -62,7 +62,7 @@ public class Main {
                     break;
                 }
                 case 4: {
-                    System.out.println("4");
+                    vizualizarPedidos();
                     break;
                 }
                 case 5: {
@@ -77,160 +77,152 @@ public class Main {
         } while (loop);
     }
 
+    private void vizualizarPedidos() {
+        List<Pedido> pedidos = pedidoRepository.findAll();
+
+        pedidos.forEach(System.out::println);
+    }
+
     private void adicionarPedido() {
-        var loop = true;
-        do {
+
+        Pedido pedido = new Pedido(LocalDate.now());
+        pedidoRepository.save(pedido);
+
+        while(true) {
             exibirCategorias();
 
-            System.out.println("Digite o numero da categoria para selecionar os produtos:");
+            if (pedido.getProdutos().isEmpty()) {
+                System.out.println("Digite o numero da categoria para selecionar os produtos:");
+            } else {
+                System.out.println("Digite o numero da categoria para selecionar os produtos (Digite 0 para fechar o pedido):");
+            }
+
             var categoriaEscolhida = scanner.nextInt();
             scanner.nextLine();
 
-            if (categoriaEscolhida <= categorias.size()) {
-                Pedido pedido = new Pedido(LocalDate.now());
+            if (categoriaEscolhida == 0) {
+                pedidoRepository.save(pedido);
 
-                var num = -1;
-                int numeroProduto;
+                System.out.println("*** Pedido fechado com sucesso! ***\n");
+
+                break;
+            }
+
+            if (categoriaEscolhida <= categorias.size()) {
+
                 var categoria = categorias.get(categoriaEscolhida - 1);
 
-                do {
-                    System.out.println(categoria);
+                System.out.println(categoria);
 
-                    if (num == -1) {
-                        System.out.println("Digite o numero do produto para adicionar ao pedido:");
-                    } else {
-                        System.out.println("Digite o numero do produto para adicionar ao pedido ou 0 para fechar o pedido:");
+                System.out.println("Digite o numero do produto para adicionar ao pedido:");
 
-                    }
-                    numeroProduto = scanner.nextInt();
-                    scanner.nextLine();
+                int numeroProduto = scanner.nextInt();
+                scanner.nextLine();
 
-                    num = numeroProduto;
+                long idProduto = categoria.getProdutos().get(numeroProduto - 1).getId();
 
-                    if (numeroProduto != 0) {
-                        if (numeroProduto <= categoria.getProdutos().size()) {
-                            var idproduto = categoria.getProdutos().get(numeroProduto - 1).getId();
+                Optional<Produto> produto = produtoRepository.findById(idProduto);
+                produto.ifPresent(produtoEncontrado -> pedido.getProdutos().add(produtoEncontrado));
+                produto.ifPresent(p -> System.out.println("*** " + p.getNome() + " no valor de R$" + p.getPreco() + " adicionado ao pedido! ***"));
 
-                            Optional<Produto> buscaProduto = produtoRepository.findById(idproduto);
-
-                            Produto produto = buscaProduto.get();
-
-                            pedido.getProdutos().add(produto);
-
-                            System.out.println("***** " + produto.getNome() + " Adicionado ao pedido! *****\n");
-
-
-                        } else {
-                            System.out.println("***** Produto nao encontrado! *****\n");
-                        }
-                    } else {
-                        pedidoRepository.save(pedido);
-                        System.out.println("\n***** PEDIDO FECHADO! *****");
-                        num = numeroProduto;
-                    }
-
-                } while (num != 0);
-
-                loop = false;
-
-            } else {
-                System.out.println("***** CATEGORIA NÃO ENCONTRADA! *****\n");
-            }
-        } while (loop);
+            } else{
+            System.out.println("\n*** Categoria nao encontrada! ***\n");
+        }
     }
+}
 
     private void adicionarProduto() {
-        boolean loop = true;
-        String nome = "";
+    boolean loop = true;
+    String nome = "";
 
-        do {
-            System.out.println("Nome do porduto:");
-            String nomeCheck = scanner.nextLine();
+    do {
+        System.out.println("Nome do porduto:");
+        String nomeCheck = scanner.nextLine();
 
-            List<Produto> nomeProdutos = produtoRepository.findAll();
+        List<Produto> nomeProdutos = produtoRepository.findAll();
 
-            Optional<Produto> verificaProduto = nomeProdutos.stream()
-                    .filter(p -> p.getNome().toLowerCase().contains(nomeCheck.toLowerCase()))
-                    .findAny();
+        Optional<Produto> verificaProduto = nomeProdutos.stream()
+                .filter(p -> p.getNome().toLowerCase().contains(nomeCheck.toLowerCase()))
+                .findAny();
 
-            if (verificaProduto.isEmpty()) {
-                nome = nomeCheck;
-                loop = false;
-            } else {
-                System.out.println("Este Produto ja esta registrado!");
-            }
-
-        } while (loop);
-
-        loop = true;
-
-        System.out.println("Digite o Valor:");
-        double valor = scanner.nextDouble();
-
-        do {
-            exibirCategorias();
-
-
-            System.out.println("Digite o numero da categoria (digite 0 para adicionar uma categoria):");
-            var numeroDaCategoria = scanner.nextInt();
-            scanner.nextLine();
-
-            if (numeroDaCategoria == 0) {
-                System.out.println("Digite o nome da Categoria para cadastrar:");
-                String nomeCategoria = scanner.nextLine();
-
-                Optional<Categoria> verficaCategoria = categorias.stream()
-                        .filter(c -> c.getNome().toLowerCase().contains(nomeCategoria.toLowerCase()))
-                        .findFirst();
-
-                if (verficaCategoria.isEmpty()){
-                    Categoria categoria = new Categoria(nomeCategoria);
-                    categoriaRepository.save(categoria);
-                    System.out.println("**** Nova Categoria salva com sucesso! ****");
-                } else {
-                    System.out.println("**** Categoria Ja existente! ****");
-                }
-
-            } else if (numeroDaCategoria <= categorias.size()) {
-                Produto produto = new Produto(valor, nome);
-
-                var categoria = categorias.get(numeroDaCategoria - 1);
-
-                List<Produto> novosProdutos = categoria.getProdutos();
-
-                novosProdutos.add(produto);
-                categoria.setProdutos(novosProdutos);
-                produtoRepository.save(produto);
-
-                System.out.println("\n****** " + nome + " no valor de R$ " + valor + " adicionado a lista de produtos! ******\n");
-
-                loop =  false;
-            } else {
-                System.out.println("Esta Categoria nao existe!");
-            }
-        } while (loop);
-    }
-
-    private void exibirCategorias() {
-        System.out.println("LISTA DE CATEGORIAS:");
-
-        categorias = categoriaRepository.findAll();
-
-        if (!categorias.isEmpty()){
-            for (int i = 0; i < categorias.size(); i++) {
-                System.out.println(i + 1 + " - " +categorias.get(i).getNome());
-            }
+        if (verificaProduto.isEmpty()) {
+            nome = nomeCheck;
+            loop = false;
         } else {
-            System.out.println("**** Lista de categorias vazia! ****");
+            System.out.println("Este Produto ja esta registrado!");
         }
 
-    }
+    } while (loop);
 
-    private void vizualizarProdutos(){
-        List<Categoria> produtosRegistrados = categoriaRepository.findAll();
+    loop = true;
 
-        produtosRegistrados.forEach(System.out::println);
+    System.out.println("Digite o Valor:");
+    double valor = scanner.nextDouble();
 
+    do {
+        exibirCategorias();
+
+
+        System.out.println("Digite o numero da categoria (digite 0 para adicionar uma categoria):");
+        var numeroDaCategoria = scanner.nextInt();
+        scanner.nextLine();
+
+        if (numeroDaCategoria == 0) {
+            System.out.println("Digite o nome da Categoria para cadastrar:");
+            String nomeCategoria = scanner.nextLine();
+
+            Optional<Categoria> verficaCategoria = categorias.stream()
+                    .filter(c -> c.getNome().toLowerCase().contains(nomeCategoria.toLowerCase()))
+                    .findFirst();
+
+            if (verficaCategoria.isEmpty()) {
+                Categoria categoria = new Categoria(nomeCategoria);
+                categoriaRepository.save(categoria);
+                System.out.println("**** Nova Categoria salva com sucesso! ****");
+            } else {
+                System.out.println("**** Categoria Ja existente! ****");
+            }
+
+        } else if (numeroDaCategoria <= categorias.size()) {
+            Produto produto = new Produto(valor, nome);
+
+            var categoria = categorias.get(numeroDaCategoria - 1);
+
+            List<Produto> novosProdutos = categoria.getProdutos();
+
+            novosProdutos.add(produto);
+            categoria.setProdutos(novosProdutos);
+            produtoRepository.save(produto);
+
+            System.out.println("\n****** " + nome + " no valor de R$ " + valor + " adicionado a lista de produtos! ******\n");
+
+            loop = false;
+        } else {
+            System.out.println("Esta Categoria nao existe!");
+        }
+    } while (loop);
+}
+
+    private void exibirCategorias() {
+    System.out.println("\n+ Lista de categorias:");
+
+    categorias = categoriaRepository.findAll();
+
+    if (!categorias.isEmpty()) {
+        for (int i = 0; i < categorias.size(); i++) {
+            System.out.println(i + 1 + " - " + categorias.get(i).getNome());
+        }
+    } else {
+        System.out.println("**** Lista de categorias vazia! ****");
     }
 
 }
+
+    private void vizualizarProdutos() {
+    List<Categoria> produtosRegistrados = categoriaRepository.findAll();
+
+    produtosRegistrados.forEach(System.out::println);
+
+}
+
+        }
