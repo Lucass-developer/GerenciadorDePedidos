@@ -7,7 +7,6 @@ import java.util.List;
 
 @Entity
 public class Categoria {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,6 +17,13 @@ public class Categoria {
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Produto> produtos;
 
+    //Constructors
+    public Categoria(String nome) {
+        this.nome = nome;
+    }
+
+    public Categoria(){}
+
     @Override
     public String toString() {
 
@@ -27,20 +33,19 @@ public class Categoria {
 
         for (Produto p : produtos) {
             listaProdutos
-                    .append(i++)
+                    .append(i)
                     .append(" | ")
                     .append(p.getNome())
                     .append(" - R$ ")
                     .append(p.getPreco())
                     .append("\n");
+
+            i++;
         }
 
         return "Categoria: " + nome +
                 "\nLista de Produtos:\n" + listaProdutos;
     }
-
-    //Construtor padrao
-    public Categoria(){}
 
     //Getters and setters
     public List<Produto> getProdutos() {
@@ -50,10 +55,6 @@ public class Categoria {
     public void setProdutos(List<Produto> produtos) {
         produtos.forEach(p -> p.setCategoria(this));
         this.produtos = produtos;
-    }
-
-    public Categoria(String nome) {
-        this.nome = nome;
     }
 
     public Long getId() {

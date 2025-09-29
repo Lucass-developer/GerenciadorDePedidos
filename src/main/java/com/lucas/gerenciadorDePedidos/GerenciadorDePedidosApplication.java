@@ -1,7 +1,6 @@
 package com.lucas.gerenciadorDePedidos;
 
 import com.lucas.gerenciadorDePedidos.main.Main;
-import com.lucas.gerenciadorDePedidos.model.Categoria;
 import com.lucas.gerenciadorDePedidos.repository.CategoriaRepository;
 import com.lucas.gerenciadorDePedidos.repository.PedidoRepository;
 import com.lucas.gerenciadorDePedidos.repository.ProdutoRepository;
@@ -17,6 +16,7 @@ public class GerenciadorDePedidosApplication implements CommandLineRunner {
 		SpringApplication.run(GerenciadorDePedidosApplication.class, args);
 	}
 
+	//Repository's
 	@Autowired
 	private ProdutoRepository produtoRepository;
 
@@ -26,9 +26,9 @@ public class GerenciadorDePedidosApplication implements CommandLineRunner {
 	@Autowired
 	private CategoriaRepository categoriaRepository;
 
+	//Main
 	@Override
 	public void run(String... args) throws Exception {
-
 		Main main = new Main(produtoRepository, pedidoRepository, categoriaRepository);
 		main.gerenciador();
 	}
