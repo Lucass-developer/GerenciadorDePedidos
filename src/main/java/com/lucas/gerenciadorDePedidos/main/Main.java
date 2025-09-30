@@ -1,6 +1,7 @@
 package com.lucas.gerenciadorDePedidos.main;
 
 import com.lucas.gerenciadorDePedidos.repository.CategoriaRepository;
+import com.lucas.gerenciadorDePedidos.repository.FornecedorRepository;
 import com.lucas.gerenciadorDePedidos.repository.PedidoRepository;
 import com.lucas.gerenciadorDePedidos.repository.ProdutoRepository;
 import com.lucas.gerenciadorDePedidos.service.PedidoService;
@@ -15,9 +16,9 @@ public class Main {
     private final PedidoService pedidoService;
 
     //Repository's
-    public Main(ProdutoRepository produtoRepository, PedidoRepository pedidoRepository, CategoriaRepository categoriaRepository) {
+    public Main(ProdutoRepository produtoRepository, PedidoRepository pedidoRepository, CategoriaRepository categoriaRepository, FornecedorRepository fornecedorRepository) {
         //Services
-        this.produtoService = new ProdutoService(produtoRepository, categoriaRepository);
+        this.produtoService = new ProdutoService(produtoRepository, categoriaRepository, fornecedorRepository);
         this.pedidoService = new PedidoService(pedidoRepository, produtoRepository, categoriaRepository);
     }
 

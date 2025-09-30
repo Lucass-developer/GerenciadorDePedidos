@@ -11,28 +11,43 @@ public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
+    private String nome;
+    @Column(name = "Valor")
+    private Double preco;
 
+    //Maps
     @ManyToOne
     private Categoria categoria;
 
     @ManyToMany(mappedBy = "produtos")
     private List<Pedido> pedidos = new ArrayList<>();
 
-    @Column(unique = true)
-    private String nome;
-    @Column(name = "Valor")
-    private Double preco;
+    @ManyToOne
+    @JoinColumn(name = "fornecedor_id")
+    private Fornecedor fornecedor;
 
-    //construtor padrão;
+    //Constructor
+    public Produto(Double preco, String nome) {
+        this.preco = preco;
+        this.nome = nome;
+    }
+
     public Produto(){}
 
     @Override
     public String toString() {
-        return "Nome: " + nome + " - R$ " + preco + "\n";
+        return "Nome: " + nome + " - R$ " + preco + "Fornecedor: " + fornecedor.getNome() + "\n";
     }
 
-    //get and setters
+    //Getters and Setters
+    public Fornecedor getFornecedor() {
+        return fornecedor;
+    }
 
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
+    }
 
     public List<Pedido> getPedidos() {
         return pedidos;
@@ -48,11 +63,6 @@ public class Produto {
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
-    }
-
-    public Produto(Double preco, String nome) {
-        this.preco = preco;
-        this.nome = nome;
     }
 
     public Long getId() {

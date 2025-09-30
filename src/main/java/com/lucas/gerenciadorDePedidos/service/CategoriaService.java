@@ -16,15 +16,13 @@ public class CategoriaService {
         this.categoriaRepository = categoriaRepository;
     }
 
-    //Services
+    //Public's
     public void exibirCategorias() {
-        System.out.println("+ Lista de categorias +");
+        System.out.println("+ Lista de categorias +\n");
 
-        List<Categoria> categorias = categoriaRepository.findAll();
-
-        if (!categorias.isEmpty()) {
+        if (!categoriaList().isEmpty()) {
             int i = 1;
-            for (Categoria c : categorias) {
+            for (Categoria c : categoriaList()) {
                 System.out.println(i + ". " + c.getNome());
                 i++;
             }
@@ -46,9 +44,8 @@ public class CategoriaService {
             categoriaRepository.save(categoria);
             System.out.println("+" + categoria.getNome() + " Salva com sucesso! +");
         } else {
-            System.out.println("+ Categoria ja registrada! +");
+            System.out.println("+ Categoria ja registrada! +\n");
         }
-
     }
 
     public boolean existeCategoria(String nomeCategoria) {
