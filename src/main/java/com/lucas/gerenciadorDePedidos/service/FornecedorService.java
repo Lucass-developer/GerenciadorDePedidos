@@ -2,7 +2,6 @@ package com.lucas.gerenciadorDePedidos.service;
 
 import com.lucas.gerenciadorDePedidos.model.Fornecedor;
 import com.lucas.gerenciadorDePedidos.repository.FornecedorRepository;
-import org.yaml.snakeyaml.emitter.ScalarAnalysis;
 
 import java.util.List;
 import java.util.Scanner;
@@ -16,21 +15,21 @@ public class FornecedorService {
         this.fornecedorRepository = fornecedorRepository;
     }
 
-    //Functions
+    //Public
     public List<Fornecedor> fornecedorList(){
         return fornecedorRepository.findAll();
     }
 
     public void exibirFornecedores(){
-        System.out.println("\n+ Lista de fornedores +\n");
-
+        System.out.println("\n+ Lista de fornedores +");
         int i = 1;
         if (!fornecedorList().isEmpty()) {
             for (Fornecedor f : fornecedorList()) {
                 System.out.println(i + " | " + f.getNome());
+                i++;
             }
         } else {
-            System.out.println("+ Lista Vazia! +");
+            System.out.println("+ Lista Vazia! +\n");
         }
     }
 

@@ -29,9 +29,14 @@ public class PedidoService {
 
     //Functions
     public void vizualizarPedidos() {
-        System.out.println("+ LISTA DE PEDIDOS +");
+        System.out.println("\n+ Lista de pedidos +");
         List<Pedido> pedidos = pedidoRepository.findAll();
-        pedidos.forEach(System.out::println);
+
+        if(!pedidos.isEmpty()) {
+            pedidos.forEach(System.out::println);
+        } else {
+            System.out.println("+ Lista de pedidos vazia! +");
+        }
     }
 
     public void addProdutoPedido(Scanner scanner) {

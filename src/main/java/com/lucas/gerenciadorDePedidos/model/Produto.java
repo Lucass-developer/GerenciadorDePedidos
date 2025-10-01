@@ -27,7 +27,7 @@ public class Produto {
     @JoinColumn(name = "fornecedor_id")
     private Fornecedor fornecedor;
 
-    //Constructor
+    //Constructors
     public Produto(Double preco, String nome) {
         this.preco = preco;
         this.nome = nome;

@@ -3,6 +3,7 @@ package com.lucas.gerenciadorDePedidos.model;
 import com.lucas.gerenciadorDePedidos.repository.ProdutoRepository;
 import jakarta.persistence.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Entity
@@ -26,6 +27,7 @@ public class Categoria {
 
     @Override
     public String toString() {
+        produtos.sort(Comparator.comparing(p -> p.getFornecedor().getNome()));
 
         StringBuilder listaProdutos = new StringBuilder();
 
@@ -38,8 +40,9 @@ public class Categoria {
                     .append(p.getNome())
                     .append(" - R$ ")
                     .append(p.getPreco())
-                    .append("\n");
-
+                    .append(" (")
+                    .append(p.getFornecedor().getNome())
+                    .append(")\n");
             i++;
         }
 

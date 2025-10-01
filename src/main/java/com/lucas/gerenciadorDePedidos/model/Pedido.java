@@ -23,7 +23,7 @@ public class Pedido {
 
     private List<Produto> produtos = new ArrayList<>();
 
-    //Construtores
+    //Constructors
     public Pedido(LocalDate data) {
         this.data = data;
     }
@@ -48,7 +48,6 @@ public class Pedido {
     }
 
     //Getters and setters
-
     public List<Produto> getProdutos() {
         return produtos;
     }

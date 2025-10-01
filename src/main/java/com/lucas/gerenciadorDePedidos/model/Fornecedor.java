@@ -16,7 +16,7 @@ public class Fornecedor {
     @OneToMany(mappedBy = "fornecedor", cascade = CascadeType.ALL)
     private List<Produto> produtos = new ArrayList<>();
 
-    //Constructors {
+    //Constructors
     public Fornecedor(String nome) {
         this.nome = nome;
     }

@@ -16,9 +16,9 @@ public class CategoriaService {
         this.categoriaRepository = categoriaRepository;
     }
 
-    //Public's
+    //Public
     public void exibirCategorias() {
-        System.out.println("+ Lista de categorias +\n");
+        System.out.println("\n+ Lista de categorias +");
 
         if (!categoriaList().isEmpty()) {
             int i = 1;
