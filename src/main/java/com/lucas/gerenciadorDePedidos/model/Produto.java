@@ -16,7 +16,6 @@ public class Produto {
     @Column(name = "Valor")
     private Double preco;
 
-    //Maps
     @ManyToOne
     private Categoria categoria;
 
@@ -37,7 +36,7 @@ public class Produto {
 
     @Override
     public String toString() {
-        return "Nome: " + nome + " - R$ " + preco + "Fornecedor: " + fornecedor.getNome() + "\n";
+        return "Nome: " + nome + " - R$ " + preco + " (" + fornecedor.getNome() + ")";
     }
 
     //Getters and Setters

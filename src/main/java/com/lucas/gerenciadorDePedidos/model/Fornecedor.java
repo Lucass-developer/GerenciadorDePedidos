@@ -13,7 +13,7 @@ public class Fornecedor {
 
     private String nome;
 
-    @OneToMany(mappedBy = "fornecedor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fornecedor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Produto> produtos = new ArrayList<>();
 
     //Constructors
@@ -28,7 +28,7 @@ public class Fornecedor {
 
         for (Produto p : produtos) {
             listaProdutos
-                    .append(p.getCategoria())
+                    .append(p.getCategoria().getNome())
                     .append(" | ")
                     .append(p.getNome())
                     .append(" - R$ ")

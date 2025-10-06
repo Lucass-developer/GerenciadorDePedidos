@@ -18,23 +18,45 @@ public class ProdutoService {
     //Repository's
     private final ProdutoRepository produtoRepository;
     private final CategoriaRepository categoriaRepository;
-
+    private final FornecedorRepository fornecedorRepository;
 
     //Constructors
     public ProdutoService(ProdutoRepository produtoRepository, CategoriaRepository categoriaRepository, FornecedorRepository fornecedorRepository) {
         this.produtoRepository = produtoRepository;
         this.categoriaRepository = categoriaRepository;
+        this.fornecedorRepository = fornecedorRepository;
         this.categoriaService = new CategoriaService(categoriaRepository);
         this.fornecedorService = new FornecedorService(fornecedorRepository);
     }
 
     //Public
-    public void vizualizarProdutos() {
-        System.out.println("\n+ Lista de produtos +");
-        List<Categoria> produtosRegistrados = categoriaRepository.findAll();
-        if (!produtoRepository.findAll().isEmpty()) {
-            produtosRegistrados.forEach(System.out::println);
-        } else { System.out.println("+ Lista de produtos vazia! +"); }
+    public void menuVizualizarProdutos(Scanner s) {
+        int opcao;
+        do {
+            System.out.println("""
+                    + Filtros de busca +
+                    1. Buscar por Nome
+                    2. Buscar por Categoria
+                    3. Buscar por Fornecedor
+                    4. Buscar por Preço
+                    5. Vizualizar Todos
+                    0. Menu Principal
+                    
+                    + Escolha uma opção:
+                    """);
+            opcao = s.nextInt();
+            s.nextLine();
+
+            switch (opcao) {
+                case 0 -> System.out.println("Retornando ao menu principal......");
+                case 1 -> buscaPorNome(s);
+                case 2 -> buscaPorCategoria(s);
+                case 3 -> buscaPorFornecedor(s);
+                case 4 -> buscaPorPreco(s);
+                case 5 -> vizualizarProdutos();
+                default -> System.out.println("+ Opção invalida!");
+            }
+        } while (opcao != 0);
     }
 
     public void adicionarProduto(Scanner s) {
@@ -62,6 +84,46 @@ public class ProdutoService {
     }
 
     //Private
+    private void buscaPorCategoria(Scanner s){
+        categoriaService.exibirCategorias();
+        System.out.println("+ Escolha a Categoria: ");
+        var numCategoria = s.nextInt();
+        s.nextLine();
+
+        Long id = categoriaService.categoriaList().get(numCategoria - 1).getId();
+        Categoria categoria = categoriaRepository.findById(id).orElse(null);
+        System.out.println(categoria);
+    }
+
+    private void buscaPorFornecedor(Scanner s) {
+        fornecedorService.exibirFornecedores();
+        System.out.println("+ Escolha o fornecedor: ");
+        var numFornecedor = s.nextInt();
+        s.nextLine();
+
+        Long id = fornecedorService.fornecedorList().get(numFornecedor - 1).getId();
+        Fornecedor fornecedor = fornecedorRepository.findById(id).orElse(null);
+
+        System.out.println(fornecedor);
+    }
+
+    private void buscaPorPreco(Scanner s) {
+
+    }
+
+    private void buscaPorNome(Scanner s) {
+        System.out.println("+ Digite o nome do produto:");
+        String nomeDoProduto = s.nextLine();
+
+        try {
+            List<Produto> produtosPorNome = produtoRepository.findByNomeContainingIgnoreCase(nomeDoProduto);
+            produtosPorNome.forEach(System.out::println);
+        } catch (Exception e) {
+            System.out.println("+ Produto nao encontrado! +");
+        }
+
+    }
+
     private Fornecedor adicionarFornecedor(Scanner s) {
         while (true){
             fornecedorService.exibirFornecedores();
@@ -103,6 +165,15 @@ public class ProdutoService {
                 }
             }
         }
+    }
+
+    private void vizualizarProdutos() {
+        System.out.println("\n+ Lista de produtos +\n");
+        List<Categoria> produtosRegistrados = categoriaRepository.findAll();
+        if (!produtoRepository.findAll().isEmpty()) {
+            produtosRegistrados.forEach(System.out::println);
+        } else {
+            System.out.println("+ Lista de produtos vazia! +"); }
     }
 
     private boolean existeProduto(String nome) {

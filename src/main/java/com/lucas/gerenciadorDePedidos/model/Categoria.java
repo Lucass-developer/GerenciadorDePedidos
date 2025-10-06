@@ -1,6 +1,5 @@
 package com.lucas.gerenciadorDePedidos.model;
 
-import com.lucas.gerenciadorDePedidos.repository.ProdutoRepository;
 import jakarta.persistence.*;
 
 import java.util.Comparator;
@@ -23,7 +22,7 @@ public class Categoria {
         this.nome = nome;
     }
 
-    public Categoria(){}
+    public Categoria() {}
 
     @Override
     public String toString() {

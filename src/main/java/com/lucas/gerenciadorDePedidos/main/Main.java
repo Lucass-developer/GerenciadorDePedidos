@@ -10,7 +10,7 @@ import com.lucas.gerenciadorDePedidos.service.ProdutoService;
 import java.util.Scanner;
 
 public class Main {
-    //Services2
+    //Services
     private final Scanner scanner = new Scanner(System.in);
     private final ProdutoService produtoService;
     private final PedidoService pedidoService;
@@ -27,9 +27,9 @@ public class Main {
 
         do {
             System.out.println("""
-                    \n+ -*-*-  MENU  -*-*- +
+                    + -*-*-  MENU  -*-*- +
                     1 - Adicionar Produtos
-                    2 - Vizualizar Produtos
+                    2 - Menu Produtos
                     3 - Adicionar Pedidos
                     4 - Ver Pedidos
                     0 - Sair
@@ -41,8 +41,8 @@ public class Main {
 
             switch (opcao) {
                 case 1 -> produtoService.adicionarProduto(scanner);
-                case 2 -> produtoService.vizualizarProdutos();
-                case 3 -> pedidoService.addProdutoPedido(scanner);
+                case 2 -> produtoService.menuVizualizarProdutos(scanner);
+                case 3 -> pedidoService.adiconarNovoPedido(scanner);
                 case 4 -> pedidoService.vizualizarPedidos();
                 case 0 -> System.out.println("+ Saindo.....");
                 default -> System.out.println("+ Opção invalida, tente novamente.");
