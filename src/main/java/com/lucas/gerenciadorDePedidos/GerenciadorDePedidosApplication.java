@@ -30,7 +30,7 @@ public class GerenciadorDePedidosApplication implements CommandLineRunner {
 	@Autowired
 	private FornecedorRepository fornecedorRepository;
 
-	@Override //Main
+	@Override
 	public void run(String... args) throws Exception {
 		Main main = new Main(produtoRepository, pedidoRepository, categoriaRepository, fornecedorRepository);
 		main.gerenciador();

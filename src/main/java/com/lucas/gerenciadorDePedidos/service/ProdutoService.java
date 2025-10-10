@@ -44,17 +44,18 @@ public class ProdutoService {
                     
                     + Escolha uma opção:
                     """);
+
             opcao = s.nextInt();
             s.nextLine();
 
             switch (opcao) {
-                case 0 -> System.out.println("Retornando ao menu principal......");
+                case 0 -> System.out.println("+ Retornando ao menu principal......");
                 case 1 -> buscaPorNome(s);
                 case 2 -> buscaPorCategoria(s);
                 case 3 -> buscaPorFornecedor(s);
                 case 4 -> buscaPorPreco(s);
                 case 5 -> vizualizarProdutos();
-                default -> System.out.println("+ Opção invalida!");
+                default -> System.out.println("+ Opção invalida! +");
             }
         } while (opcao != 0);
     }
@@ -74,40 +75,76 @@ public class ProdutoService {
         var fornecedor = adicionarFornecedor(s);
         var categoria = adicionarCategoria(s);
 
-        Produto produto = new Produto(valor, nome);
-        produto.setCategoria(categoria);
-        produto.setFornecedor(fornecedor);
-        categoria.getProdutos().add(produto);
-        produtoRepository.save(produto);
-
-        System.out.println("+ " + nome + " no valor de R$ " + valor + " adicionado a lista de produtos! +");
+        try {
+            Produto produto = new Produto(valor, nome);
+            produto.setCategoria(categoria);
+            produto.setFornecedor(fornecedor);
+            categoria.getProdutos().add(produto);
+            produtoRepository.save(produto);
+            System.out.println("+ " + nome + " no valor de R$ " + valor + " adicionado a lista de produtos! +");
+        } catch (Exception e) {
+            System.out.println("+ Falha ao adicionar produto! +");
+        }
     }
 
     //Private
-    private void buscaPorCategoria(Scanner s){
-        categoriaService.exibirCategorias();
-        System.out.println("+ Escolha a Categoria: ");
-        var numCategoria = s.nextInt();
-        s.nextLine();
+    private void buscaPorCategoria(Scanner s) {
+        while (true) {
+            categoriaService.exibirCategorias();
+            System.out.println("+ Escolha a Categoria: ");
+            var numCategoria = s.nextInt();
+            s.nextLine();
 
-        Long id = categoriaService.categoriaList().get(numCategoria - 1).getId();
-        Categoria categoria = categoriaRepository.findById(id).orElse(null);
-        System.out.println(categoria);
+            if (numCategoria <= categoriaService.categoriaList().size() && numCategoria > 0) {
+                Long id = categoriaService.categoriaList().get(numCategoria - 1).getId();
+                Categoria categoria = categoriaRepository.findById(id).orElse(null);
+                System.out.println(categoria);
+                break;
+            } else {
+                System.out.println("+ Categoria Invalida! +");
+            }
+        }
     }
 
     private void buscaPorFornecedor(Scanner s) {
-        fornecedorService.exibirFornecedores();
-        System.out.println("+ Escolha o fornecedor: ");
-        var numFornecedor = s.nextInt();
-        s.nextLine();
+        while (true) {
+            fornecedorService.exibirFornecedores();
+            System.out.println("+ Escolha o fornecedor: ");
+            var numFornecedor = s.nextInt();
+            s.nextLine();
 
-        Long id = fornecedorService.fornecedorList().get(numFornecedor - 1).getId();
-        Fornecedor fornecedor = fornecedorRepository.findById(id).orElse(null);
-
-        System.out.println(fornecedor);
+            if (numFornecedor <= fornecedorService.fornecedorList().size() && numFornecedor > 0) {
+                Long id = fornecedorService.fornecedorList().get(numFornecedor - 1).getId();
+                Fornecedor fornecedor = fornecedorRepository.findById(id).orElse(null);
+                System.out.println(fornecedor);
+                break;
+            } else {
+                System.out.println("+ Fornecedor invalido! +");
+            }
+        }
     }
 
     private void buscaPorPreco(Scanner s) {
+        int opcao;
+        do {
+            System.out.println("""
+                    + Filtros:
+                    1. Escolher valor
+                    2. top 3 mais caros
+                    3. top 5 mais baratos
+                    0. Menu Principal
+                    """);
+            opcao = s.nextInt();
+            s.nextLine();
+
+            switch (opcao) {
+                case 1 -> vizualizarPorValor(s);
+                case 2 -> vizualizarTop3MaisCaros(s);
+                case 3 -> vizualizarTop5MaisBarato(s);
+                case 0 -> System.out.println("+ Retornando ao menu principal......");
+                default -> System.out.println("+ Opção invalida! +");
+            }
+        } while (opcao != 0);
 
     }
 
@@ -125,10 +162,10 @@ public class ProdutoService {
     }
 
     private Fornecedor adicionarFornecedor(Scanner s) {
-        while (true){
+        while (true) {
             fornecedorService.exibirFornecedores();
             System.out.println("\n+ Digite o numero do Fornecedor (0 para adicionar novo fornecedor):");
-            int numFornedor= s.nextInt();
+            int numFornedor = s.nextInt();
             s.nextLine();
 
             if (numFornedor == 0) {
@@ -155,7 +192,7 @@ public class ProdutoService {
 
             if (numeroDaCategoria == 0) {
                 categoriaService.criarCategoria(s);
-            }  else {
+            } else {
                 numeroDaCategoria -= 1;
                 if (categoriaService.existeCategoria(categoriaService.categoriaList().get(numeroDaCategoria).getNome())) {
                     System.out.println("\n+ " + categoriaService.categoriaList().get(numeroDaCategoria).getNome() + " selecionada! +\n");
@@ -173,7 +210,92 @@ public class ProdutoService {
         if (!produtoRepository.findAll().isEmpty()) {
             produtosRegistrados.forEach(System.out::println);
         } else {
-            System.out.println("+ Lista de produtos vazia! +"); }
+            System.out.println("+ Lista de produtos vazia! +");
+        }
+    }
+
+    private void vizualizarPorValor(Scanner s) {
+        System.out.println("+ Digite um Valor: ");
+        double valor = s.nextDouble();
+
+        if (valor <= 0) {
+            System.out.println("+ Valor invalido! +");
+            return;
+        }
+
+        int opcao;
+        do {
+            System.out.printf("""
+                    1. Acima de R$ %.2f
+                    2. Abaixo de R$ %.2f
+                    3. Valor exato
+                    0. Menu anterior
+                    """, valor, valor);
+            opcao = s.nextInt();
+            s.nextLine();
+
+            switch (opcao) {
+                case 1 -> {vizualizarValorAcima(valor); opcao = 0;}
+                case 2 -> {vizualizarValorAbaixo(valor); opcao = 0;}
+                case 3 -> {vizualizarValorExato(valor); opcao = 0;}
+                case 0 -> System.out.println("+ Retornando ao menu anterior......");
+                default -> System.out.println("+ Opção invalida! +");
+            }
+
+        } while (opcao != 0);
+    }
+
+    private void vizualizarTop3MaisCaros(Scanner s) {
+        List<Produto> produtos = produtoRepository.findTop3ByOrderByPrecoDesc();
+        if (!produtos.isEmpty()) {
+            System.out.println("\n+ Top 3  produtos Mais Caros +\n");
+            produtos.forEach(System.out::println);
+        } else {
+            System.out.println("+ Nenhum produto encontrado! +");
+        }
+    }
+
+    private void vizualizarTop5MaisBarato(Scanner s) {
+        List<Produto> produtos = produtoRepository.findTop5ByOrderByPrecoAsc();
+        if (!produtos.isEmpty()) {
+            System.out.println("\n+ Top 5 produtos Mais Baratos +\n");
+            produtos.forEach(System.out::println);
+        } else {
+            System.out.println("+ Nenhum produto encontrado! +");
+        }
+    }
+
+    private void vizualizarValorExato(double valor) {
+        List<Produto> produtos = produtoRepository.findByPrecoEquals(valor);
+
+        if (!produtos.isEmpty()) {
+            System.out.printf("\n+ Lista de Produtos com o Preço Exato de R$ %.2f +\n", valor);
+            produtos.forEach(System.out::println);
+        } else {
+            System.out.printf("+ Nenhum produto encontrado nesse valor (R$ %.2f) +\n", valor);
+        }
+    }
+
+    private void vizualizarValorAcima(double valor) {
+        List<Produto> produtos = produtoRepository.findByPrecoGreaterThanEqual(valor);
+
+        if (!produtos.isEmpty()) {
+            System.out.printf("\n+ Lista de Produtos Acima de R$ %.2f +\n", valor);
+            produtos.forEach(System.out::println);
+        } else {
+            System.out.printf("+ Nenhum produto encontrado acima desse valor (R$ %.2f) +\n", valor);
+        }
+    }
+
+    private void vizualizarValorAbaixo(double valor) {
+        List<Produto> produtos = produtoRepository.findByPrecoLessThanEqual(valor);
+
+        if (!produtos.isEmpty()) {
+            System.out.printf("\n+ Lista de Produtos Abaixo de R$ %.2f +\n", valor);
+            produtos.forEach(System.out::println);
+        } else {
+            System.out.printf("+ Nenhum produto encontrado abaixo desse valor (R$ %.2f) +\n", valor);
+        }
     }
 
     private boolean existeProduto(String nome) {
@@ -181,3 +303,4 @@ public class ProdutoService {
                 .anyMatch(p -> p.getNome().equalsIgnoreCase(nome));
     }
 }
+
