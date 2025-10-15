@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 public class PedidoService {
 
-    //Repository's
+    //Repositories
     private final PedidoRepository pedidoRepository;
 
     //Services

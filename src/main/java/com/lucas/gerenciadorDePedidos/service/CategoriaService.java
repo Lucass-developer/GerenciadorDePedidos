@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class CategoriaService {
 
-    //Repository's
+    //Repositories
     private final CategoriaRepository categoriaRepository;
 
     //Constructors

@@ -1,9 +1,11 @@
 package com.lucas.gerenciadorDePedidos.repository;
 
-import com.lucas.gerenciadorDePedidos.model.Produto;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.lucas.gerenciadorDePedidos.model.Produto;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     List<Produto> findByNomeContainingIgnoreCase(String nome);
@@ -17,4 +19,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     List<Produto> findTop3ByOrderByPrecoDesc();
 
     List<Produto> findTop5ByOrderByPrecoAsc();
+
+    @Query("SELECT p FROM Produto p WHERE p.nome ILIKE %:name%")
+    List<Produto> findBYProdutoName(String name);
 }

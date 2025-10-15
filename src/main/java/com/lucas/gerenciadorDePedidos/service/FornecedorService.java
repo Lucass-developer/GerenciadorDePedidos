@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class FornecedorService {
-    //Repository's
+    //Repositories
     private final FornecedorRepository fornecedorRepository;
 
     //Constructors

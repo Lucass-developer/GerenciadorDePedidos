@@ -15,7 +15,7 @@ public class ProdutoService {
     CategoriaService categoriaService;
     FornecedorService fornecedorService;
 
-    //Repository's
+    //Repositories
     private final ProdutoRepository produtoRepository;
     private final CategoriaRepository categoriaRepository;
     private final FornecedorRepository fornecedorRepository;
@@ -153,7 +153,7 @@ public class ProdutoService {
         String nomeDoProduto = s.nextLine();
 
         try {
-            List<Produto> produtosPorNome = produtoRepository.findByNomeContainingIgnoreCase(nomeDoProduto);
+            List<Produto> produtosPorNome = produtoRepository.findBYProdutoName(nomeDoProduto);
             produtosPorNome.forEach(System.out::println);
         } catch (Exception e) {
             System.out.println("+ Produto nao encontrado! +");

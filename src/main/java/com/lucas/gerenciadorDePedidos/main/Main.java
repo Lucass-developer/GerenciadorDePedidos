@@ -15,7 +15,7 @@ public class Main {
     private final ProdutoService produtoService;
     private final PedidoService pedidoService;
 
-    //Repository's
+    //Repositories
     public Main(ProdutoRepository produtoRepository, PedidoRepository pedidoRepository, CategoriaRepository categoriaRepository, FornecedorRepository fornecedorRepository) {
         //Services
         this.produtoService = new ProdutoService(produtoRepository, categoriaRepository, fornecedorRepository);

@@ -17,7 +17,7 @@ public class GerenciadorDePedidosApplication implements CommandLineRunner {
 		SpringApplication.run(GerenciadorDePedidosApplication.class, args);
 	}
 
-	//Repository's
+	//Repositories
 	@Autowired
 	private ProdutoRepository produtoRepository;
 
